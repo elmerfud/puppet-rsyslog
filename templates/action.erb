@@ -1,0 +1,7 @@
+<% if @action_if -%>
+  if <%= action_if -%> then {
+<% end -%>
+    action(type="<%= action_type -%>"<% @action_options.each_pair do |key, value| %> <%= key %>="<%= value %>"<% end %>)
+<% if @action_if -%>
+  }
+<% end -%>

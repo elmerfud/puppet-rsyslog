@@ -10,12 +10,11 @@
 #
 #  class { 'rsyslog::service': }
 #
-class rsyslog::service {
-  service { $rsyslog::service_name:
+class rsyslog_rs::service {
+  service { $rsyslog_rs::service_name:
     ensure     => running,
     enable     => true,
-    hasstatus  => $rsyslog::service_hasstatus,
-    hasrestart => $rsyslog::service_hasrestart,
-    require    => Class['rsyslog::config'],
+    hasstatus  => $rsyslog_rs::service_hasstatus,
+    hasrestart => $rsyslog_rs::service_hasrestart,
   }
 }

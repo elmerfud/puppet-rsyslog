@@ -11,11 +11,19 @@
 #
 #  class { 'rsyslog::params': }
 #
-class rsyslog::params {
+class rsyslog_rs::params {
 
   $max_message_size           = '2k'
-  $purge_rsyslog_d            = false
-  $extra_modules              = []
+  $purge_rsyslog_d            = true
+  $default_modules = {
+    'default_imuxsock' => {
+      module_name => 'imuxsock',
+      module_options => { 'SysSock.RateLimit.Interval' => '0' }
+    },
+    'default_imklog' => {
+      module_name => 'imklog'
+    },
+  }
   $run_user = $::operatingsystem ? {
     'Ubuntu' => 'syslog',
     default  => 'root',
@@ -24,7 +32,7 @@ class rsyslog::params {
     'Ubuntu' => 'syslog',
     default  => 'root',
   }
-  $preserve_fqdn              = false
+  $preserve_fqdn = false
 
   case $::osfamily {
     debian: {
@@ -48,7 +56,7 @@ class rsyslog::params {
       $default_config_file    = 'rsyslog_default'
       $log_group              = 'adm'
       $log_style              = 'debian'
-      $umask                  = false
+      $umask                  = '0000'
       $perm_file              = '0640'
       $perm_dir               = '0755'
       $spool_dir              = '/var/spool/rsyslog'
@@ -56,14 +64,62 @@ class rsyslog::params {
       $client_conf            = 'client'
       $server_conf            = 'server'
       $ssl                    = false
-      $modules                = [
-        '$ModLoad imuxsock # provides support for local system logging',
-        '$ModLoad imklog   # provides kernel logging support (previously done by rklogd)',
-        '#$ModLoad immark  # provides --MARK-- message capability',
-      ]
       $service_hasrestart     = true
       $service_hasstatus      = true
+      $default_inputs         = undef
+      $main_queue = {
+        'queue.filename' => 'main',
+        'queue.spoolDirectory' => $spool_dir,
+        'queue.maxdiskspace' => '1g',
+        'queue.timeoutenqueue' => '0',
+        'queue.type' => 'LinkedList',
+        'queue.saveonshutdown' => 'on'
+      }
+      $default_ruleset_actions = {
+        'action1' => {
+          'action_type' => 'omfile',
+          'action_options' => { 'file' => '/var/log/syslog', 'template' => 'RSYSLOG_FileFormat' },
+          'action_if' => 'prifilt("*.*;auth,authpriv.none")',
+          'order' => '010'
+        },
+        'action2' => {
+          'action_type' => 'omfile',
+          'action_options' => { 'file' => '/var/log/auth.log', 'template' => 'RSYSLOG_FileFormat' },
+          'action_if' => 'prifilt("auth,authpriv.*")',
+          'order' => '011'
+        },
+        'action3' => {
+          'action_type' => 'omfile',
+          'action_options' => { 'file' => '/var/log/cron.log', 'template' => 'RSYSLOG_FileFormat' },
+          'action_if' => 'prifilt("cron.*")',
+          'order' => '012'
+        },
+        'action4' => {
+          'action_type' => 'omfile',
+          'action_options' => { 'file' => '/var/log/daemon.log', 'template' => 'RSYSLOG_FileFormat' },
+          'action_if' => 'prifilt("daemon.*")',
+          'order' => '013'
+        },
+        'action5' => {
+          'action_type' => 'omfile',
+          'action_options' => { 'file' => '/var/log/kern.log', 'template' => 'RSYSLOG_FileFormat' },
+          'action_if' => 'prifilt("kern.*")',
+          'order' => '014'
+        },
+        'action6' => {
+          'action_type' => 'omfile',
+          'action_options' => { 'file' => '/var/log/mail.log', 'template' => 'RSYSLOG_FileFormat' },
+          'action_if' => 'prifilt("mail.*")',
+          'order' => '015'
+        },
+        'action7' => {
+          'action_type' => 'omfile',
+          'action_options' => { 'file' => '/var/log/user.log', 'template' => 'RSYSLOG_FileFormat' },
+          'action_if' => 'prifilt("user.*")',
+          'order' => '016'
+        }
 
+      }
     }
     redhat: {
       if $::operatingsystem == 'Amazon' {
@@ -73,11 +129,6 @@ class rsyslog::params {
         $gnutls_package_name    = 'rsyslog-gnutls'
         $relp_package_name      = false
         $default_config_file    = 'rsyslog_default'
-        $modules                = [
-          '$ModLoad imuxsock # provides support for local system logging',
-          '$ModLoad imklog   # provides kernel logging support (previously done by rklogd)',
-          '#$ModLoad immark  # provides --MARK-- message capability',
-        ]
       }
       elsif $::operatingsystemmajrelease == 5 {
         $rsyslog_package_name   = 'rsyslog'
@@ -86,11 +137,6 @@ class rsyslog::params {
         $gnutls_package_name    = 'rsyslog-gnutls'
         $relp_package_name      = 'rsyslog-relp'
         $default_config_file    = 'rsyslog_default'
-        $modules                = [
-          '$ModLoad imuxsock # provides support for local system logging',
-          '$ModLoad imklog   # provides kernel logging support (previously done by rklogd)',
-          '#$ModLoad immark  # provides --MARK-- message capability',
-        ]
       }
       elsif $::operatingsystemmajrelease == 6 {
         $rsyslog_package_name   = 'rsyslog'
@@ -99,11 +145,7 @@ class rsyslog::params {
         $gnutls_package_name    = 'rsyslog-gnutls'
         $relp_package_name      = 'rsyslog-relp'
         $default_config_file    = 'rsyslog_default'
-        $modules                = [
-          '$ModLoad imuxsock # provides support for local system logging',
-          '$ModLoad imklog   # provides kernel logging support (previously done by rklogd)',
-          '#$ModLoad immark  # provides --MARK-- message capability',
-        ]
+        $default_inputs         = undef
       }
       elsif $::operatingsystemmajrelease >= 7 {
         $rsyslog_package_name   = 'rsyslog'
@@ -112,12 +154,14 @@ class rsyslog::params {
         $gnutls_package_name    = 'rsyslog-gnutls'
         $relp_package_name      = 'rsyslog-relp'
         $default_config_file    = 'rsyslog_default_rhel7'
-        $modules                = [
-          '$ModLoad imuxsock # provides support for local system logging',
-          '$ModLoad imjournal # provides access to the systemd journal',
-          '#$ModLoad imklog   # provides kernel logging support (previously done by rklogd)',
-          '#$ModLoad immark  # provides --MARK-- message capability',
-        ]
+        $default_inputs = {
+          'input1' => {
+            'input_type' => 'imuxsock',
+            'input_options' => {
+              'Socket' => '/run/systemd/journal/syslog'
+            }
+          }
+        }
       } else {
         $rsyslog_package_name   = 'rsyslog5'
         $mysql_package_name     = 'rsyslog5-mysql'
@@ -125,11 +169,6 @@ class rsyslog::params {
         $gnutls_package_name    = 'rsyslog5-gnutls'
         $relp_package_name      = 'librelp'
         $default_config_file    = 'rsyslog_default'
-        $modules                = [
-          '$ModLoad imuxsock # provides support for local system logging',
-          '$ModLoad imklog   # provides kernel logging support (previously done by rklogd)',
-          '#$ModLoad immark  # provides --MARK-- message capability',
-        ]
       }
       $package_status         = 'latest'
       $rsyslog_d              = '/etc/rsyslog.d/'
@@ -143,11 +182,56 @@ class rsyslog::params {
       $perm_dir               = '0750'
       $spool_dir              = '/var/lib/rsyslog'
       $service_name           = 'rsyslog'
-      $client_conf            = 'client'
-      $server_conf            = 'server'
       $ssl                    = false
       $service_hasrestart     = true
       $service_hasstatus      = true
+      $main_queue = {
+        'queue.filename' => 'main',
+        'queue.spoolDirectory' => $spool_dir,
+        'queue.maxdiskspace' => '1g',
+        'queue.timeoutenqueue' => '0',
+        'queue.type' => 'LinkedList',
+        'queue.saveonshutdown' => 'on'
+      }
+      $default_ruleset_actions = {
+          'action1' => {
+            'action_type' => 'omfile',
+            'action_options' => { 'file' => '/var/log/messages', 'template' => 'RSYSLOG_FileFormat' },
+            'action_if' => 'prifilt("*.info;mail.none;authpriv.none;cron.none")',
+            'order' => '010'
+          },
+          'action2' => {
+            'action_type' => 'omfile',
+            'action_options' => { 'file' => '/var/log/secure', 'template' => 'RSYSLOG_FileFormat' },
+            'action_if' => 'prifilt("authpriv.*")',
+            'order' => '011'
+          },
+          'action3' => {
+            'action_type' => 'omfile',
+            'action_options' => { 'file' => '/var/log/maillog', 'template' => 'RSYSLOG_FileFormat' },
+            'action_if' => 'prifilt("mail.*")',
+            'order' => '012'
+          },
+          'action4' => {
+            'action_type' => 'omfile',
+            'action_options' => { 'file' => '/var/log/cron', 'template' => 'RSYSLOG_FileFormat' },
+            'action_if' => 'prifilt("cron.*")',
+            'order' => '013'
+          },
+          'action5' => {
+            'action_type' => 'omfile',
+            'action_options' => { 'file' => '/var/log/spooler', 'template' => 'RSYSLOG_FileFormat' },
+            'action_if' => 'prifilt("uucp,news.crit")',
+            'order' => '014'
+          },
+          'action6' => {
+            'action_type' => 'omfile',
+            'action_options' => { 'file' => '/var/log/boot.log', 'template' => 'RSYSLOG_FileFormat' },
+            'action_if' => 'prifilt("local7.*")',
+            'order' => '015'
+          }
+        
+      }
     }
     suse: {
       $rsyslog_package_name   = 'rsyslog'
@@ -169,11 +253,6 @@ class rsyslog::params {
       $service_name           = 'syslog'
       $client_conf            = 'client'
       $server_conf            = 'server'
-      $modules                = [
-        '$ModLoad imuxsock # provides support for local system logging',
-        '$ModLoad imklog   # provides kernel logging support (previously done by rklogd)',
-        '#$ModLoad immark  # provides --MARK-- message capability',
-      ]
   }
     freebsd: {
       $rsyslog_package_name   = 'sysutils/rsyslog5'
@@ -197,11 +276,6 @@ class rsyslog::params {
       $client_conf            = 'client'
       $server_conf            = 'server'
       $ssl                    = false
-      $modules                = [
-        '$ModLoad imuxsock # provides support for local system logging',
-        '$ModLoad imklog   # provides kernel logging support (previously done by rklogd)',
-        '#$ModLoad immark  # provides --MARK-- message capability',
-      ]
       $service_hasrestart     = true
       $service_hasstatus      = true
     }
@@ -230,11 +304,6 @@ class rsyslog::params {
           $client_conf            = 'client'
           $server_conf            = 'server'
           $ssl                    = false
-          $modules                = [
-            '$ModLoad imuxsock # provides support for local system logging',
-            '$ModLoad imklog   # provides kernel logging support (previously done by rklogd)',
-            '#$ModLoad immark  # provides --MARK-- message capability',
-          ]
           $service_hasrestart     = true
           $service_hasstatus      = true
 
