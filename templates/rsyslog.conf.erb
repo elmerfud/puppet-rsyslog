@@ -5,32 +5,32 @@
 #
 # Set max message size for sending and receiving
 #
-$MaxMessageSize <%= scope.lookupvar('rsyslog_rs::max_message_size') %>
+$MaxMessageSize <%= scope.lookupvar('rsyslog::max_message_size') %>
 
 #
 # Set the default permissions for all log files.
 #
-$FileOwner <%= scope.lookupvar('rsyslog_rs::log_user') %>
-$FileGroup <%= scope.lookupvar('rsyslog_rs::log_group') %>
-$FileCreateMode <%= scope.lookupvar('rsyslog_rs::perm_file') %>
-$DirOwner <%= scope.lookupvar('rsyslog_rs::log_user') %>
-$DirGroup <%= scope.lookupvar('rsyslog_rs::log_group') %>
-$DirCreateMode <%= scope.lookupvar('rsyslog_rs::perm_dir') %>
-$PrivDropToUser <%= scope.lookupvar('rsyslog_rs::run_user') %>
-$PrivDropToGroup <%= scope.lookupvar('rsyslog_rs::run_group') %>
-<% if scope.lookupvar('rsyslog_rs::umask') -%>
-$Umask <%= scope.lookupvar('rsyslog_rs::umask') %>
+$FileOwner <%= scope.lookupvar('rsyslog::log_user') %>
+$FileGroup <%= scope.lookupvar('rsyslog::log_group') %>
+$FileCreateMode <%= scope.lookupvar('rsyslog::perm_file') %>
+$DirOwner <%= scope.lookupvar('rsyslog::log_user') %>
+$DirGroup <%= scope.lookupvar('rsyslog::log_group') %>
+$DirCreateMode <%= scope.lookupvar('rsyslog::perm_dir') %>
+$PrivDropToUser <%= scope.lookupvar('rsyslog::run_user') %>
+$PrivDropToGroup <%= scope.lookupvar('rsyslog::run_group') %>
+<% if scope.lookupvar('rsyslog::umask') -%>
+$Umask <%= scope.lookupvar('rsyslog::umask') %>
 <% end -%>
 
 #
 # Setup Main Message Queue
 #
-main_queue(<% scope.lookupvar('rsyslog_rs::main_queue').each_pair do |key, value| %> <%= key %>="<%= value %>"<% end %>)
+main_queue(<% scope.lookupvar('rsyslog::main_queue').each_pair do |key, value| %> <%= key %>="<%= value %>"<% end %>)
 
 #
-# Include all config files in <%= scope.lookupvar('rsyslog_rs::rsyslog_d') %>
+# Include all config files in <%= scope.lookupvar('rsyslog::rsyslog_d') %>
 #
-$IncludeConfig <%= scope.lookupvar('rsyslog_rs::rsyslog_d') -%>*.conf
+$IncludeConfig <%= scope.lookupvar('rsyslog::rsyslog_d') -%>*.conf
 
 #
 # Define default rule set

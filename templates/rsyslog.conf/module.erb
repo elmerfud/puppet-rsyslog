@@ -1,0 +1,8 @@
+<% if scope.function_versioncmp(['7.0.0', @rsyslog_version]) > 0 -%>
+$ModLoad <%= @mod_name %>
+<% @mod_options.each_pair do |key, value| -%> 
+<%= key %> "<%= value %>"
+<% end -%>
+<% else -%>
+module(load="<%= @mod_name %>"<% @mod_options.each_pair do |key, value| %> <%= key %>="<%= value %>"<% end %>)
+<% end -%>

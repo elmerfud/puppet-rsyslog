@@ -1,29 +1,29 @@
 # == Class: rsyslog::ruleset
 #
 
-define rsyslog_rs::ruleset (
+define rsyslog::ruleset (
   $ruleset_name = undef,
   $ruleset_options = {},
 ) {
 
   concat {
-    "${rsyslog_rs::rsyslog_d}/${name}.conf":
-      owner => $rsyslog_rs::log_user,
-      group => $rsyslog_rs::log_group,
-      mode => $rsyslog_rs::umask;
+    "${rsyslog::rsyslog_d}/${name}.conf":
+      owner => $rsyslog::log_user,
+      group => $rsyslog::log_group,
+      mode => $rsyslog::umask;
   }
 
   concat::fragment {
     "rule_${name}_start":
-      target => "${rsyslog_rs::rsyslog_d}/${name}.conf",
-      order  => '001',
-      content => "ruleset(name=\"${ruleset_name}\") {\n";
+      target  => "${rsyslog::rsyslog_d}/${name}.conf",
+      order   => '001',
+      content => template('rsyslog/ruleset_start.erb');
     "rule_${name}_end":
-      target => "${rsyslog_rs::rsyslog_d}/${name}.conf",
-      order  => '999',
-      content => "}\n";
+      target  => "${rsyslog::rsyslog_d}/${name}.conf",
+      order   => '999',
+      content => template('rsyslog/ruleset_end.erb');
   }
 
-  create_resources('rsyslog_rs::action', $ruleset_options, { 'ruleset_name' => $ruleset_name, 'fileconcat_name' => "${rsyslog_rs::rsyslog_d}/${name}.conf" } )
+  create_resources('rsyslog::action', $ruleset_options, { 'ruleset_name' => $ruleset_name, 'fileconcat_name' => "${rsyslog::rsyslog_d}/${name}.conf" } )
 
 }

@@ -1,15 +1,17 @@
 # == Class: rsyslog::modload
 #
 
-define rsyslog_rs::module (
-  $module_name = undef,
-  $module_options = {},
+define rsyslog::module (
+  $mod_name = $name,
+  $mod_order = '020',
+  $mod_options = {},
 ) {
+
   concat::fragment { 
     "module_${name}":
-      target => $rsyslog_rs::rsyslog_conf,
-      order  => '05',
-      content => template('rsyslog_rs/module.erb');
+      target => $rsyslog::rsyslog_conf,
+      order  => $mod_order,
+      content => template('rsyslog/rsyslog.conf/module.erb');
   }
 
 }

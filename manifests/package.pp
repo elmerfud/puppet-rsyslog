@@ -10,22 +10,22 @@
 #
 #  class { 'rsyslog::package': }
 #
-class rsyslog_rs::package {
-  if $rsyslog_rs::rsyslog_package_name != false {
-    package { $rsyslog_rs::rsyslog_package_name:
-      ensure => $rsyslog_rs::package_status,
+class rsyslog::package {
+  if $rsyslog::rsyslog_package_name != false {
+    package { $rsyslog::rsyslog_package_name:
+      ensure => $rsyslog::package_status,
     }
   }
 
-  if $rsyslog_rs::relp_package_name != false {
-    package { $rsyslog_rs::relp_package_name:
-      ensure => $rsyslog_rs::package_status
+  if $rsyslog::relp_package_name != false {
+    package { $rsyslog::relp_package_name:
+      ensure => $rsyslog::package_status
     }
   }
 
-  if $rsyslog_rs::gnutls_package_name != false {
-    package { $rsyslog_rs::gnutls_package_name:
-      ensure => $rsyslog_rs::package_status
+  if $rsyslog::gnutls_package_name != false {
+    package { $rsyslog::gnutls_package_name:
+      ensure => $rsyslog::package_status
     }
   }
 

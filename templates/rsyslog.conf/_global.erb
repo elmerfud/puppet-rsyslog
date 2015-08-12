@@ -1,0 +1,25 @@
+#
+# Setup Global Options
+#
+<% if scope.function_versioncmp(['7.0.0', @rsyslog_version]) > 0 -%>
+$WorkDirectory <%= scope.lookupvar('rsyslog::global_work_dir') %>
+<% if scope.lookupvar('rsyslog::global_max_message_size') -%>
+$MaxMessageSize <%= scope.lookupvar('rsyslog::global_max_message_size') %>
+<% end -%>
+<% if scope.lookupvar('rsyslog::global_preserve_fqdn') -%>
+$PreserveFQDN <%= scope.lookupvar('rsyslog::global_preserve_fqdn') %>
+<% end -%>
+<% else -%>
+global (
+  workDirectory="<%= scope.lookupvar('rsyslog::global_work_dir') %>"
+<% if scope.lookupvar('rsyslog::global_max_message_size') -%>
+  maxMessageSize=<%= scope.lookupvar('rsyslog::global_max_message_size') %>
+<% end -%>
+<% if scope.lookupvar('rsyslog::global_preserve_fqdn') -%>
+  preserveFQDN=<%= scope.lookupvar('rsyslog::global_preserve_fqdn') %>
+<% end -%>
+)
+<% end -%>
+
+
+

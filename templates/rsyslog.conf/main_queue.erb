@@ -1,0 +1,62 @@
+#
+# Setup Main Message Queue
+#
+<% if scope.function_versioncmp(['7.5.3', @rsyslog_version]) > 0 -%>
+<% if @checkpointinterval -%>
+$MainMsgQueueCheckpointInterval <%= @checkpointinterval %>
+<% end -%>
+<% if @dequeuebatchsize -%>
+$MainMsgQueueDequeueBatchSize <%= @dequeuebatchsize %>
+<% end -%>
+<% if @dequeueslowdown -%>
+$MainMsgQueueDequeueSlowdown <%= @dequeueslowdown %>
+<% end -%>
+<% if @discardmark -%>
+$MainMsgQueueDiscardMark <%= @discardmark %>
+<% end -%>
+<% if @discardseverity -%>
+$MainMsgQueueDiscardSeverity <%= @discardseverity %>
+<% end -%>
+<% if @filename -%>
+$MainMsgQueueFileName <%= @filename %>
+<% end -%>
+<% if @highwatermark -%>
+$MainMsgQueueHighWaterMark <%= @highwatermark %>
+<% end -%>
+<% if @immediateshutdown -%>
+$MainMsgQueueImmediateShutdown <%= @immediateshutdown %>
+<% end -%>
+<% if @lowwatermark -%>
+$MainMsgQueueLowWaterMark <%= @lowwatermark %>
+<% end -%>
+<% if @maxdisksize -%>
+$MainMsgQueueMaxFileSize <%= @maxdisksize %>
+<% end -%>
+<% if @timeoutactioncompletion -%>
+$MainMsgQueueTimeoutActionCompletion <%= @timeoutactioncompletion %>
+<% end -%>
+<% if @timeoutenqueue -%>
+$MainMsgQueueTimeoutEnqueue <%= @timeoutenqueue %>
+<% end -%>
+<% if @timeoutshutdown -%>
+$MainMsgQueueTimeoutShutdown <%= @timeoutshutdown %>
+<% end -%>
+<% if @workertimeoutthreadshutdown -%>
+$MainMsgQueueWorkerTimeoutThreadShutdown <%= @workertimeoutthreadshutdown %>
+<% end -%>
+<% if @queuetype -%>
+$MainMsgQueueType <%= @queuetype %>
+<% end -%>
+<% if @saveonshutdown -%>
+$MainMsgQueueSaveOnShutdown <%= @saveonshutdown %>
+<% end -%>
+<% if @workerthreads -%>
+$MainMsgQueueWorkerThreads <%= @workerthreads %>
+<% end -%>
+<% if @workerthreadminumummessages -%>
+$MainMsgQueueWorkerThreadMinumumMessages <%= @workerthreadminumummessages %>
+<% end -%>
+<% else -%>
+
+
+<% end -%>

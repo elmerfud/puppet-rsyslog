@@ -1,12 +1,12 @@
 {
-  "name": "saz-rsyslog",
-  "version": "3.4.0",
-  "author": "saz",
-  "summary": "Manage rsyslog client and server",
+  "name": "elmerfud-rsyslog",
+  "version": "0.1.0",
+  "author": "elmerfud",
+  "summary": "Manage rsyslog",
   "license": "Apache License, Version 2.0",
-  "source": "https://github.com/saz/puppet-rsyslog.git",
-  "project_page": "https://github.com/saz/puppet-rsyslog",
-  "issues_url": "https://github.com/saz/puppet-rsyslog/issues",
+  "source": "https://github.com/elmerfud/puppet-rsyslog.git",
+  "project_page": "https://github.com/elmerfud/puppet-rsyslog",
+  "issues_url": "https://github.com/elmerfud/puppet-rsyslog/issues",
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat"
@@ -52,7 +52,7 @@
       "version_requirement": "3.x"
     }
   ],
-  "description": "Manage rsyslog client and server via Puppet",
+  "description": "Manage rsyslog via Puppet",
   "types": [
   
   ],

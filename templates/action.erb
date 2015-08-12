@@ -1,7 +1,13 @@
-<% if @action_if -%>
-  if <%= action_if -%> then {
+<% if scope.function_versioncmp(['7.0.0', @rsyslog_version]) > 0 -%>
+<%= @action_selector -%> <%= @action_output -%><% if @action_template -%>;<%= @action_template -%><% end %>
+<% else -%>
+<% if @action_type == 'omfile' -%>
+<%= @action_selector -%> action(type="<%= @action_type -%>" file="<%= @action_output -%>" <% if @action_template -%>template="<%= @action_template -%>"<% end %><% @action_options.each_pair do |key, value| -%> <%= key -%>="<%= value -%>"<% end -%>)
 <% end -%>
-    action(type="<%= action_type -%>"<% @action_options.each_pair do |key, value| %> <%= key %>="<%= value %>"<% end %>)
-<% if @action_if -%>
-  }
+<% if @action_type == 'omusrmsg' -%>
+<%= @action_selector -%> action(type="<%= @action_type -%>" users="<%= @action_output -%>" <% if @action_template -%>template="<%= @action_template -%>"<% end %><% @action_options.each_pair do |key, value| -%> <%= key -%>="<%= value -%>"<% end -%>)
+<% end -%>
+<% if @action_type == 'omfwd' -%>
+<%= @action_selector -%> action(type="<%= @action_type -%>" <% if @action_template -%>template="<%= @action_template -%>"<% end %><% @action_options.each_pair do |key, value| -%> <%= key -%>="<%= value -%>"<% end -%>)
+<% end -%>
 <% end -%>

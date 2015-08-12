@@ -1,0 +1,5 @@
+<% if scope.function_versioncmp(['7.0.0', @rsyslog_version]) > 0 -%>
+$RuleSet <%= @ruleset_name %>
+<% else -%>
+ruleset(name="<%= @ruleset_name %>") {
+<% end -%>
