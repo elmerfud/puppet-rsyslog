@@ -50,6 +50,8 @@ class rsyslog::config {
   # Default to order => 20
   if ($rsyslog::default_modules == true) {
     create_resources('rsyslog::module', $rsyslog::params::default_modules)
+  } else {
+    create_resources('rsyslog::module', $rsyslog::modules)
   }
 
   concat::fragment {

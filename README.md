@@ -11,15 +11,15 @@ This module attempts to manage rsyslog client and server via Puppet using the Ra
 ```
 ---
 classes:
-  - rsyslog_rs
+  - rsyslog
 ```
 
 ### Forwarding Logs to remote server
 ```
 ---
 classes:
-  - rsyslog_rs
-rsyslog_rs::ruleset_merge_actions:
+  - rsyslog
+rsyslog::ruleset_merge_actions:
   action0:
     action_type: 'omfwd'
     action_options:
@@ -35,17 +35,17 @@ rsyslog_rs::ruleset_merge_actions:
 ```puppet
 ---
 classes:
-  - rsyslog_rs
-rsyslog_rs::inputs:
+  - rsyslog
+rsyslog::inputs:
   imrelp_10514:
     input_type: 'imtcp'
     input_options:
       port: '10514'
       ruleset: 'RemoteLogs'
-rsyslog_rs::modules:
+rsyslog::modules:
   imtcp:
     module_name: 'imtcp'
-rsyslog_rs::rulesets:
+rsyslog::rulesets:
   '10_remote_tcp':
     ruleset_name: 'RemoteLogs'
     ruleset_options:
@@ -61,17 +61,17 @@ rsyslog_rs::rulesets:
 ```puppet
 ---
 classes:
-  - rsyslog_rs
-rsyslog_rs::modules:
+  - rsyslog
+rsyslog::modules:
   imptcp:
     module_name: 'imptcp'
-rsyslog_rs::inputs:
+rsyslog::inputs:
   input_imptcp_10514:
     input_type: 'imptcp'
     input_options:
       port: '10514'
       ruleset: 'RelayLogs_10514'
-rsyslog_rs::rulesets:
+rsyslog::rulesets:
   '10_RelayLogs_10514':
     ruleset_name: 'RelayLogs_10514'
     ruleset_options:
